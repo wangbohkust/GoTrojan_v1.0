@@ -15,9 +15,6 @@ class HudLayout: SKSpriteNode{
     let rightMoveButton = SKSpriteNode(imageNamed: "rightArrow1")
     let jumpButton = SKSpriteNode(imageNamed: "jumpArrow1")
     let returnButton = SKSpriteNode(imageNamed: "return")
-    var lastStateSwitchTime = NSTimer()
-    var timercount = 0
-    var totalcount = 120
     var myLabel = SKLabelNode()
     
     required init?(coder aDecoder: NSCoder) {
@@ -37,7 +34,7 @@ class HudLayout: SKSpriteNode{
         myLabel.text = "time"
         myLabel.fontSize = 20
         myLabel.position = CGPointMake(CGRectGetMaxX(self.frame) + 70, CGRectGetMaxY(self.frame)-150)
-        lastStateSwitchTime = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("counting"), userInfo: nil, repeats: true)
+     //   lastStateSwitchTime = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("counting"), userInfo: nil, repeats: true)
         
         // boxes
         for t in 0...1 {
@@ -56,13 +53,6 @@ class HudLayout: SKSpriteNode{
         self.addChild(downToUpBox)
 
     }
-    func counting(){
-        timercount+=1
-        var timeLeft = totalcount - timercount
-        //self.myLabel.text = toString(timeLeft)
-    }
-    
-    
-    
+
 }
 

@@ -21,10 +21,10 @@ class Hero: SKSpriteNode{
         heroAnimationArray = []
         super.init(texture: heroTexture, color: nil, size: heroTexture.size())
         self.position = CGPointMake(0,0)
-        //var newRectangle = CGRect()
-        //var newRectangle = CGRectMake(self.frame.midX, self.frame.midY, self.frame.width-50, self.frame.height )
-        //self.physicsBody = SKPhysicsBody(rectangleOfSize: newRectangle.size)
-        self.physicsBody = SKPhysicsBody(rectangleOfSize: self.frame.size)
+      //  var newRectangle = CGRect()
+        var newRectangle = CGRectMake(self.frame.midX, self.frame.midY, self.frame.width-50, self.frame.height )
+        self.physicsBody = SKPhysicsBody(rectangleOfSize: newRectangle.size)
+       // self.physicsBody = SKPhysicsBody(rectangleOfSize: self.frame.size)
         self.physicsBody!.affectedByGravity = true
         self.physicsBody!.allowsRotation = false
         self.physicsBody!.friction=0.2

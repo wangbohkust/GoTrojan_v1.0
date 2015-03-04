@@ -5,7 +5,9 @@ class LevelOne: SKScene, SKPhysicsContactDelegate{
     let hero = Hero()
     let hud  = HudLayout(imageNamed:"levelone2")
     var joint: SKPhysicsJoint!
-    var flag = false
+    var timercount = 0
+    var totalcount = 6000
+    
     enum ColliderType:UInt32{
         case Hero = 1
         case Block = 2
@@ -107,13 +109,7 @@ class LevelOne: SKScene, SKPhysicsContactDelegate{
                
             }
             if hud.returnButton.containsPoint(location) {
-                var scene                           = LevelOne(size: self.size)
-                let skView                          = self.view as SKView!
-                skView?.ignoresSiblingOrder         = true
-                scene.scaleMode                     = .AspectFill
-                //scene.size                          = skView.bounds.size
-                skView.presentScene(scene)
-                println("return tapped!")
+                rebeginscene()
             }
         }
     }
@@ -146,54 +142,44 @@ class LevelOne: SKScene, SKPhysicsContactDelegate{
         if self.hero.physicsBody?.velocity.dx == 0 && self.hero.physicsBody?.velocity.dy == 0 {
             self.hero.startAnimation("stop")
         }
-        if self.hero.position.y < -610 {
-            var scene                           = LevelOne(size: self.size)
-            let skView                          = self.view as SKView!
-            skView?.ignoresSiblingOrder         = true
-            scene.scaleMode                     = .AspectFill
-            //scene.size                          = skView.bounds.size
-            skView.presentScene(scene)
-            println("return tapped!")
-
+        if self.hero.position.y < -550 {
+             rebeginscene()
         }
-        
+        if self.hud.myLabel.text.toInt() == 5 {
+             shakeCamera()
+        }
+        if self.hud.myLabel.text.toInt() == 0{
+             rebeginscene()
+        }
+        timercount+=1
+        var timeLeft = totalcount - timercount
+        self.hud.myLabel.text = toString(timeLeft/100)
     }
-   /* func releaseJoint() {
-        //hero.zPosition = 0
-        physicsWorld.removeJoint(joint);
-        flag = true
-    }*/
-   /*
-   func didBeginContact(contact:SKPhysicsContact) {
-        let collision :UInt32 = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
     
-        if collision == ColliderType.Hero.rawValue | ColliderType.Tool.rawValue {
-            flag = true
-            println(hero.position.y - hero.size.height/2)
-            println(contact.bodyA.node!.position.y + 60)
-            var foot = hero.position.y - hero.size.height/2
-            var up: CGFloat!
-            if hero.position == contact.bodyA.node?.position {
-                up = contact.bodyB.node!.position.y + 60
-            }else {
-                up = contact.bodyA.node!.position.y + 60
-
-            }
-            if foot >= (up - 20) && foot <= (up + 20) {
-                //println("pin")
-                hero.physicsBody!.velocity = CGVector(dx: 0, dy: 0)
-                let pinPoint = CGPoint(x:hero.position.x, y: up)
-                joint = SKPhysicsJointPin.jointWithBodyA(contact.bodyA, bodyB: contact.bodyB, anchor: pinPoint)
-                physicsWorld.addJoint(joint)
-            }
-        }
+    func rebeginscene(){
+        self.hud.removeAllChildren()
+        var scene                           = LevelOne(size: self.size)
+        let skView                          = self.view as SKView!
+        skView?.ignoresSiblingOrder         = true
+        scene.scaleMode                     = .AspectFill
+        //scene.size                          = skView.bounds.size
+        skView.presentScene(scene)
     }
-    func didEndContact(contact: SKPhysicsContact) {
-        let collision :UInt32 = contact.bodyA.categoryBitMask | contact.bodyB.categoryBitMask
-        if collision == ColliderType.Hero.rawValue | ColliderType.Tool.rawValue {
-            flag = false
-        }
-        
-    }*/
     
+    func shakeCamera() {
+        let numberOfShakes = 20;
+        var actionsArray:[SKAction] = [];
+        for index in 1...Int(numberOfShakes) {
+            // build a new random shake and add it to the list
+            let moveX = CGFloat(Float(arc4random()) / Float(UINT32_MAX));
+            let moveY =  CGFloat(Float(arc4random()) / Float(UINT32_MAX));
+            let maintain: NSTimeInterval = 0.1;
+            let shakeAction = SKAction.moveByX(moveX*2, y: moveY*2, duration: maintain);
+            shakeAction.timingMode = SKActionTimingMode.EaseOut;
+            actionsArray.append(shakeAction);
+            actionsArray.append(shakeAction.reversedAction());
+        }
+        let actionSeq = SKAction.sequence(actionsArray);
+        self.map.runAction(actionSeq);
+    }
 }
